@@ -2,6 +2,7 @@ import * as React from "react"
 import { EventEmitter } from "events"
 import { WindowLocation } from "@reach/router"
 import { createContentDigest } from "gatsby-core-utils"
+import { Socket } from "net";
 
 export {
   default as Link,
@@ -452,6 +453,29 @@ export interface GatsbyBrowser {
  * @see https://www.gatsbyjs.org/docs/ssr-apis/
  */
 export interface GatsbySSR {
+
+/**
+ * 
+ * Called when the socket is initialized so that you can put arguments into the socket io() function
+ * to control it
+ * 
+ * @example
+ * const React = require("react")
+ *
+ * exports.onSocketInit = ({setUrl, setSocketOptions}) => {
+ *      setUrl("htpps://localhost:42069")
+ *      setSocketOptions({ forceNew = false })
+ * }
+ *
+ */
+  onSocketInit?(args: SocketArgs): any
+  onSocketInit?(
+    args: SocketArgs
+  ): Promise<any>
+  onSokcetInit?(
+    args: SocketArgs
+  ): void
+
   /**
    * Called after every page Gatsby server renders while building HTML so you can
    * replace head components to be rendered in your `html.js`. This is useful if
@@ -700,6 +724,11 @@ export interface CreateResolversArgs extends ParentSpanPluginArgs {
 
 export interface CreateSchemaCustomizationArgs extends ParentSpanPluginArgs {
   traceId: "initial-createSchemaCustomization"
+}
+
+export interface SocketArgs extends NodePluginArgs {
+  url: string
+  socketOptions: Object
 }
 
 export interface PreRenderHTMLArgs extends NodePluginArgs {
